@@ -10,8 +10,7 @@ import org.springframework.http.*;
 
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class JokesApiApplicationTests
@@ -48,4 +47,33 @@ class JokesApiApplicationTests
         assertEquals(status, HttpStatus.OK);
         assertTrue(jokes.length > 0);
     }
+
+    @Test
+    public void createJokeTest()
+    {
+        String endpoint = "http://localhost:" + port + "/jokes";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON); //"Content-Type": "application/json"
+
+        Joke joke = new Joke("Knock, knock!");
+        HttpEntity request = new HttpEntity(joke, headers);
+
+        ResponseEntity<Joke> response = rest.exchange(endpoint, HttpMethod.POST,
+                request, Joke.class);
+
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().getId() > 0);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
